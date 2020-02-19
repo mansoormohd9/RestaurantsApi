@@ -6,6 +6,6 @@ namespace RestaurantApi.Models
     {
         public string Name { get; set; }
 
-        public IDictionary<string, AvailabilityTime> Availability { get; set; }
+        public IList<AvailabilityTime> Availability { get; set; }
     }
 }

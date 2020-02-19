@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,11 +20,10 @@ namespace RestaurantApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Restaurant> Get()
+        public IList<string> Get(string day, string time)
         {
-            var x = new CsvToJsonConvertor();
-            var z = x.GetJsonFromCsv();
-            return z.ToArray();
+            var helperService = new RestaurantService();
+            return helperService.GetAvailableRestaurants(day, time);
         }
     }
 }

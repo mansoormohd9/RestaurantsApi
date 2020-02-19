@@ -28,9 +28,9 @@ namespace RestaurantApi.Utilities
             }
         }
 
-        private IDictionary<string, AvailabilityTime> GetAvailabilityDictionary(string restaurantAvailability)
+        private IList<AvailabilityTime> GetAvailabilityDictionary(string restaurantAvailability)
         {
-            var availabilityDict = new Dictionary<string, AvailabilityTime>();
+            var availabilityDict = new List<AvailabilityTime>();
 
             var contDaysRegex = new Regex("([A-Z]\\w+-[A-Z]\\w+)");
             var daysRegex = new Regex("([^-])([A-Z]\\w+)([^-])");
@@ -47,14 +47,14 @@ namespace RestaurantApi.Utilities
 
                 if (days.Count > 0)
                 {
-                    var availabilityTime = new AvailabilityTime
-                    {
-                        StartTime = DateTime.Parse(time[0].Value),
-                        EndTime = DateTime.Parse(time[1].Value)
-                    };
                     foreach (var day in days)
                     {
-                        availabilityDict.Add(day.ToString().Trim(), availabilityTime);
+                        availabilityDict.Add(new AvailabilityTime
+                        {
+                            Day = day.ToString().Trim(),
+                            StartTime = DateTime.Parse(time[0].Value),
+                            EndTime = DateTime.Parse(time[1].Value)
+                        });
                     }
                 }
 
@@ -62,32 +62,36 @@ namespace RestaurantApi.Utilities
                 ;
                 foreach (var contDay in contDays)
                 {
-//                    var contDaySplit = contDay.ToString().Split('-');
-//                    var startDay = contDaySplit[0];
-//                    var foundMatch = false;
+                    var contDaySplit = contDay.ToString().Split('-');
+                    var foundMatch = false;
                     var availabilityTime = new AvailabilityTime
                     {
                         StartTime = DateTime.Parse(time[0].Value),
                         EndTime = DateTime.Parse(time[1].Value)
                     };
-                    availabilityDict.Add(contDay.ToString().Trim(), availabilityTime);
-                    //                    foreach (var day in daysList)
-                    //                    {
-                    //                        if (day.Trim().Equals(startDay, StringComparison.OrdinalIgnoreCase))
-                    //                        {
-                    //                            foundMatch = !foundMatch;
-                    //                        }
-                    //
-                    //                        if (foundMatch)
-                    //                        {
-                    //                            availabilityDict.Add(day.Trim(), availabilityTime);
-                    //                        }
-                    //
-                    //                        if (day.Trim().Equals(contDaySplit[1], StringComparison.OrdinalIgnoreCase))
-                    //                        {
-                    //                            break;
-                    //                        }
-                    //                    }
+                    //availabilityDict.Add(contDay.ToString().Trim(), availabilityTime);
+                    foreach (var day in daysList)
+                    {
+                        if (day.Trim().Equals(contDaySplit[0], StringComparison.OrdinalIgnoreCase))
+                        {
+                            foundMatch = !foundMatch;
+                        }
+                    
+                        if (foundMatch)
+                        {
+                            availabilityDict.Add(new AvailabilityTime
+                            {
+                                Day = day.Trim(),
+                                StartTime = DateTime.Parse(time[0].Value),
+                                EndTime = DateTime.Parse(time[1].Value)
+                            });
+                        }
+                    
+                        if (day.Trim().Equals(contDaySplit[1], StringComparison.OrdinalIgnoreCase))
+                        {
+                            break;
+                        }
+                    }
 
                 }
             }
