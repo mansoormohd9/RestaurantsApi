@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RestaurantApi.Models;
 using RestaurantApi.Utilities;
 
 namespace RestaurantApi.Controllers
