@@ -30,12 +30,11 @@ namespace RestaurantApi.Utilities
 
         private IList<AvailabilityTime> GetAvailabilityDictionary(string restaurantAvailability)
         {
-            var availabilityDict = new List<AvailabilityTime>();
+            var availabilityTime = new List<AvailabilityTime>();
 
             var contDaysRegex = new Regex("([A-Z]\\w+-[A-Z]\\w+)");
             var daysRegex = new Regex("([^-])([A-Z]\\w+)([^-])");
-            var timeRegex = new Regex("([0-9]+(:[0-9]+)?(\\s)+[aApP][mM])"); 
-            //var endTimeRegex = new Regex("([0-9]+(:[0-9]+)?(\\s)+pm)");
+            var timeRegex = new Regex("([0-9]+(:[0-9]+)?(\\s)+[aApP][mM])");
 
             foreach (var avb in restaurantAvailability.Split('/'))
             {
@@ -43,13 +42,12 @@ namespace RestaurantApi.Utilities
                 var contDays = contDaysRegex.Matches(availability);
                 var days = daysRegex.Matches(availability);
                 var time = timeRegex.Matches(availability);
-                //var endTime = endTimeRegex.Match(availability);
 
                 if (days.Count > 0)
                 {
                     foreach (var day in days)
                     {
-                        availabilityDict.Add(new AvailabilityTime
+                        availabilityTime.Add(new AvailabilityTime
                         {
                             Day = day.ToString().Trim(),
                             StartTime = DateTime.Parse(time[0].Value),
@@ -64,12 +62,6 @@ namespace RestaurantApi.Utilities
                 {
                     var contDaySplit = contDay.ToString().Split('-');
                     var foundMatch = false;
-                    var availabilityTime = new AvailabilityTime
-                    {
-                        StartTime = DateTime.Parse(time[0].Value),
-                        EndTime = DateTime.Parse(time[1].Value)
-                    };
-                    //availabilityDict.Add(contDay.ToString().Trim(), availabilityTime);
                     foreach (var day in daysList)
                     {
                         if (day.Trim().Equals(contDaySplit[0], StringComparison.OrdinalIgnoreCase))
@@ -79,7 +71,7 @@ namespace RestaurantApi.Utilities
                     
                         if (foundMatch)
                         {
-                            availabilityDict.Add(new AvailabilityTime
+                            availabilityTime.Add(new AvailabilityTime
                             {
                                 Day = day.Trim(),
                                 StartTime = DateTime.Parse(time[0].Value),
@@ -96,7 +88,7 @@ namespace RestaurantApi.Utilities
                 }
             }
 
-            return availabilityDict;
+            return availabilityTime;
         }
     }
 }
